@@ -1,23 +1,19 @@
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>List</ion-title>
-  </ion-navbar>
-</ion-header>
+    <ion-navbar color="primary">
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>About</ion-title>
+    </ion-navbar>
+  </ion-header>
 
 <ion-content>
-  <ion-list>
-    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">
-      <ion-icon [name]="item.icon" item-start></ion-icon>
-      {{item.title}}
-      <div class="item-note" item-end>
-        {{item.note}}
-      </div>
-    </button>
-  </ion-list>
-  <div *ngIf="selectedItem" padding>
-    You navigated here from <b>{{selectedItem.title}}</b>
-  </div>
+  <img src="assets/imgs/brand.jpeg" />
+<section style="text-align:center">
+    <a href="http://lehonn.com" target="_blank" ion-button round>http://lehonn.com</a>
+</section>
+  
+<p>LEHONN is one of the leading producers of indication light and wireless solution for industrial applications. Founded in 2018 by Mr.Aniket R. Badhekar, the company headquarters in Nagpur/INDIA ranks among the technological market leaders. LEHONN focuses on easy integration of Wireless Sensor operation so as the customer experience of cabling is next to zero.Indication Light having a rage nearly 1000 products with standard customization.</p>
+<p>Lehonn Technology has reliable products that’s will automate your plants, and improve your efficiency and quality. We have started our operations from 2013. Being a very new Company, we still stand for old values for service of customer within 2 days. With this, we invite you to get to know about Lehonn Technology better Experience the very best in Industrial Automation Technology.</p>
+<p>We are convinced that you will find Mountain Lion Superior to any other Company. You’ll see it in the facilities, in the people and in the products that Mountain Lion trades. It’s an Uncommon commitment to excellence and quality and to the automation and productivity of our customer.</p>
 </ion-content>
