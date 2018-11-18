@@ -1,18 +1,43 @@
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
+  <ion-navbar color="primary">
+    <!-- <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Home</ion-title>
+    </button> -->
+    <ion-title>Dashboard</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+  <ion-card *ngFor="let i of devices">
+    <ion-card-content>
+        <ion-item>
+            <ion-label><h1>{{ i.device }}</h1></ion-label>
+            <ion-toggle (ionChange)="updateDevice(i)" checked="i.state" [(ngModel)]="i.state"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="call" item-start></ion-icon>
+          {{ i.mobile }}
+          <ion-badge color="{{ i.state ? 'secondary' : 'danger' }}" item-end>{{ i.state ? 'ON' : 'OFF' }}</ion-badge>
+        </ion-item>
+        
+    </ion-card-content>
+    <ion-row no-padding style="margin-bottom: -4px">
+      <ion-col no-padding>
+        <button style="border-radius:0px" ion-button (click)="editDevice(i)" block color="warning" icon-start>
+          <ion-icon name='create'></ion-icon>
+          Edit
+        </button>
+      </ion-col>
+      <ion-col text-right no-padding>
+        <button style="border-radius:0px" (click)="deleteDevice(i)" ion-button block color="danger" icon-start>
+          <ion-icon name='trash'></ion-icon>
+          Delete
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-card>
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
-
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <ion-fab right bottom>
+      <button (click)="presentPrompt()" ion-fab color="primary"><ion-icon name="add"></ion-icon></button>
+    </ion-fab>
 </ion-content>
