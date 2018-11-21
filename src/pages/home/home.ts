@@ -4,6 +4,8 @@ import { ModalController, AlertController  } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { SMS } from '@ionic-native/sms';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { ToastController } from 'ionic-angular';
+import { CallNumber } from '@ionic-native/call-number';
 
 
 @Component({
@@ -22,7 +24,9 @@ export class HomePage {
     private storage: Storage,
     private alertCtrl: AlertController, 
     public navCtrl: NavController, 
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    public toastCtrl: ToastController,
+    private callNumber: CallNumber
     ) {
       // this.msgAlert = this.alertCtrl.create({
       //   title: 'Device Save Successfully.',
@@ -147,7 +151,24 @@ export class HomePage {
     
     if (this.sms.hasPermission()) {
       let msg = ref.state ? 'ON' : 'OFF';
-      this.sms.send(ref.mobile, msg);
+      this.sms.send(ref.mobile, msg).then( r => {
+        console.log('---send success---');
+        const toast = this.toastCtrl.create({
+          message: 'Command sent to device.',
+          duration: 3000
+        });
+        toast.present();
+      }).catch(e => {
+        console.log('---error---');
+        const toast = this.toastCtrl.create({
+          message: 'Command not sent. Device is not active.',
+          duration: 3000
+        });
+        toast.present();
+        this.storage.remove(ref.device);
+        this.storage.set(ref.device, {device: ref.device, state: 0, mobile: ref.mobile});
+        this.refreshList();
+      })
       
     } else {
 
@@ -161,5 +182,12 @@ export class HomePage {
       
 
     }
+  }
+
+
+  initCall(){
+    this.callNumber.callNumber("18001010101", true)
+  .then(res => console.log('Launched dialer!', res))
+  .catch(err => console.log('Error launching dialer', err));
   }
 }

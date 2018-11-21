@@ -15,7 +15,9 @@
             <ion-toggle (ionChange)="updateDevice(i)" checked="i.state" [(ngModel)]="i.state"></ion-toggle>
         </ion-item>
         <ion-item>
-          <ion-icon name="call" item-start></ion-icon>
+          <a (click)="initCall(i.mobile)">
+            <ion-icon name="call" item-start></ion-icon>
+          </a>
           {{ i.mobile }}
           <ion-badge color="{{ i.state ? 'secondary' : 'danger' }}" item-end>{{ i.state ? 'ON' : 'OFF' }}</ion-badge>
         </ion-item>

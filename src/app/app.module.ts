@@ -7,6 +7,8 @@ import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 
 import { SMS } from '@ionic-native/sms';
+import { CallNumber } from '@ionic-native/call-number';
+
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 import { IonicStorageModule } from '@ionic/storage';
@@ -35,7 +37,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    SMS
+    SMS,
+    CallNumber
   ]
 })
 export class AppModule {}
