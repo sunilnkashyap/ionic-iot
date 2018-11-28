@@ -6,6 +6,7 @@ import { SMS } from '@ionic-native/sms';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { ToastController } from 'ionic-angular';
 import { CallNumber } from '@ionic-native/call-number';
+import { ActionSheetController } from 'ionic-angular';
 
 
 @Component({
@@ -26,22 +27,40 @@ export class HomePage {
     public navCtrl: NavController, 
     public modalCtrl: ModalController,
     public toastCtrl: ToastController,
-    private callNumber: CallNumber
+    private callNumber: CallNumber,
+    public actionSheetCtrl: ActionSheetController
     ) {
-      // this.msgAlert = this.alertCtrl.create({
-      //   title: 'Device Save Successfully.',
-      //   subTitle: 'You can change status of current device by toggle button.',
-      //   buttons: ['Dismiss']
-      // });
-
       this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.SEND_SMS);
-     
       this.storage.forEach( r => {
-        console.log(r);
         this.devices.push(r);
       })
+      
   }
   
+  openActionSheet(currentRef) {
+    const actionSheet = this.actionSheetCtrl.create({
+      title: 'Modify your device',
+      buttons: [
+        {
+          icon: 'copy',
+          text: 'Edit',
+          role: 'edit',
+          handler: () => {
+            this.editDevice(currentRef);
+          }
+        },{
+          text: 'Delete',
+          icon: 'trash',
+          handler: () => {
+            this.deleteDevice(currentRef);
+            console.log('Delete clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
   presentPrompt() {
     let alert = this.alertCtrl.create({
       title: 'Add New Device',
@@ -60,17 +79,13 @@ export class HomePage {
         {
           text: 'Cancel',
           role: 'cancel',
-          handler: data => {
-            console.log('Cancel clicked');
-          }
+          handler: data => { }
         },
         {
           text: 'Save',
           handler: data => {
-            console.log(data);
-            this.storage.set(data.device, {device: data.device, state: 1, mobile: data.mobile});
-            this.devices.push({device: data.device, state: 1, mobile: data.mobile});
-            // this.msgAlert.present();
+            this.storage.set(data.device, {device: data.device, state: 0, mobile: data.mobile});
+            this.devices.push({device: data.device, state: 0, mobile: data.mobile});
           }
         }
       ]
@@ -79,15 +94,14 @@ export class HomePage {
   }
 
   updateDevice(ref) {
-    console.log(ref);
-    let state = ref.state ? 1 : 0;
+    let state = ref.state != 0 ? 0 : 1;
     this.storage.remove(ref.device);
+    ref.state = state;
     this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
     this.sendMessage(ref);
   }
 
   editDevice(ref) {
-    console.log(ref);
     let alert = this.alertCtrl.create({
       title: 'Edit Device',
       inputs: [
@@ -108,14 +122,12 @@ export class HomePage {
           text: 'Cancel',
           role: 'cancel',
           handler: data => {
-            console.log('Cancel clicked');
           }
         },
         {
           text: 'Save',
           handler: data => {
-            console.log(data);
-            let state = ref.state ? 1 : 0;
+            let state = ref.state;
             this.storage.remove(ref.device);
             this.storage.set(data.device, {device: data.device, state: state, mobile: data.mobile});
             this.refreshList();
@@ -128,66 +140,82 @@ export class HomePage {
   }
 
   deleteDevice(ref) {
-    this.storage.remove(ref.device);
-    this.refreshList();
+    let alert = this.alertCtrl.create({
+      title: 'Confirm delete',
+      message: 'Do you want to delete this device?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.storage.remove(ref.device);
+            this.refreshList();
+          }
+        }
+      ]
+    });
+    alert.present();
+
+    
   }
 
   refreshList() {
-    console.log('---refresh---')
     this.devices = [];
     let TIME_IN_MS = 100;
     setTimeout( () => {
         // somecode
         this.storage.forEach( r => {
-          console.log(r);
           this.devices.push(r);
+          console.log(this.devices);
         })
+        
     }, TIME_IN_MS);
     
   }
 
 
   sendMessage(ref) {
-    
+    console.log('sendmessage: ', ref)
     if (this.sms.hasPermission()) {
-      let msg = ref.state ? 'ON' : 'OFF';
+      let msg = ref.state == 1 ? 'ON' : 'OFF';
       this.sms.send(ref.mobile, msg).then( r => {
-        console.log('---send success---');
         const toast = this.toastCtrl.create({
           message: 'Command sent to device.',
           duration: 3000
         });
         toast.present();
+        this.refreshList();
       }).catch(e => {
-        console.log('---error---');
         const toast = this.toastCtrl.create({
           message: 'Command not sent. Device is not active.',
           duration: 3000
         });
         toast.present();
         this.storage.remove(ref.device);
-        this.storage.set(ref.device, {device: ref.device, state: 0, mobile: ref.mobile});
+        let state = ref.state == 0 ? 1 : 0;
+        this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
         this.refreshList();
       })
       
+      
     } else {
-
       let msgAlert = this.alertCtrl.create({
         title: 'We dont have permission to send messages.',
         subTitle: 'Please accept to allow sending messages.',
         buttons: ['Dismiss']
       });
-    msgAlert.present();
-
-      
-
+      msgAlert.present();
     }
   }
 
 
   initCall(){
-    this.callNumber.callNumber("18001010101", true)
-  .then(res => console.log('Launched dialer!', res))
-  .catch(err => console.log('Error launching dialer', err));
+    this.callNumber.callNumber("18001010101", true);
   }
 }

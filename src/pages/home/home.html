@@ -8,22 +8,61 @@
 </ion-header>
 
 <ion-content padding>
+    
   <ion-card *ngFor="let i of devices">
     <ion-card-content>
-        <ion-item>
-            <ion-label><h1>{{ i.device }}</h1></ion-label>
-            <ion-toggle (ionChange)="updateDevice(i)" checked="i.state" [(ngModel)]="i.state"></ion-toggle>
-        </ion-item>
-        <ion-item>
-          <a (click)="initCall(i.mobile)">
-            <ion-icon name="call" item-start></ion-icon>
-          </a>
-          {{ i.mobile }}
-          <ion-badge color="{{ i.state ? 'secondary' : 'danger' }}" item-end>{{ i.state ? 'ON' : 'OFF' }}</ion-badge>
-        </ion-item>
+        <ion-grid>
+            <ion-row>
+              <ion-col col-11>
+                <ion-row>
+                  <ion-col col-2 style="text-align:center">
+                      <h1>
+                        <ion-icon ios="ios-bulb" md="md-bulb"></ion-icon>
+                      </h1>
+                  </ion-col>
+                  <ion-col>
+                    <h1>
+                        {{ i.device }}
+                    </h1>
+                      
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col col-2 style="text-align:center">
+                        <h2>
+                          <a (click)="initCall(i.mobile)">
+                            <ion-icon ios="ios-call" md="md-call"></ion-icon>
+                          </a>
+                        </h2>
+                    </ion-col>
+                    <ion-col>
+                      <h2>
+                        <a (click)="initCall(i.mobile)">
+                          {{ i.mobile }}
+                        </a>
+                      </h2>
+                        
+                    </ion-col>
+                  </ion-row>
+              </ion-col>
+              <ion-col style="text-align:right">
+                  <h1 (click)="openActionSheet(i)"><ion-icon ios="ios-more" md="md-more"></ion-icon></h1>
+              </ion-col>
+            </ion-row>
+            <ion-row (click)="updateDevice(i)">
+              <ion-col class="bulbCol" [style.border-color]="i.state ? 'rgba(75, 183, 49, 0.3)':'rgba(0,0,0,0.3)'">
+                <img [src]="i.state ? 'assets/icon/on.svg' : 'assets/icon/off.svg'" />
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+
+            
+            <!-- <ion-toggle (ionChange)="updateDevice(i)" checked="i.state" [(ngModel)]="i.state"></ion-toggle> -->
+
         
     </ion-card-content>
-    <ion-row no-padding style="margin-bottom: -4px">
+
+    <!-- <ion-row no-padding style="margin-bottom: -4px">
       <ion-col no-padding>
         <button style="border-radius:0px" ion-button (click)="editDevice(i)" block color="warning" icon-start>
           <ion-icon name='create'></ion-icon>
@@ -36,7 +75,7 @@
           Delete
         </button>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
   </ion-card>
 
   <ion-fab right bottom>
