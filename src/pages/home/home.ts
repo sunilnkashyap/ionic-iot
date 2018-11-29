@@ -30,6 +30,7 @@ export class HomePage {
     private callNumber: CallNumber,
     public actionSheetCtrl: ActionSheetController
     ) {
+      this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE);
       this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.SEND_SMS);
       this.storage.forEach( r => {
         this.devices.push(r);
@@ -100,6 +101,24 @@ export class HomePage {
     this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
     this.sendMessage(ref);
   }
+
+  onDevice(ref) {
+    let state = 1;
+    this.storage.remove(ref.device);
+    ref.state = state;
+    this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
+    this.sendMessage(ref);
+  }
+
+  offDevice(ref) {
+    let state = 0;
+    this.storage.remove(ref.device);
+    ref.state = state;
+    this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
+    this.sendMessage(ref);
+  }
+
+  
 
   editDevice(ref) {
     let alert = this.alertCtrl.create({
@@ -215,7 +234,7 @@ export class HomePage {
   }
 
 
-  initCall(){
-    this.callNumber.callNumber("18001010101", true);
+  initCall(phone){
+    this.callNumber.callNumber(phone, true);
   }
 }

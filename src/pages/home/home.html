@@ -49,10 +49,20 @@
                   <h1 (click)="openActionSheet(i)"><ion-icon ios="ios-more" md="md-more"></ion-icon></h1>
               </ion-col>
             </ion-row>
-            <ion-row (click)="updateDevice(i)">
-              <ion-col class="bulbCol" [style.border-color]="i.state ? 'rgba(75, 183, 49, 0.3)':'rgba(0,0,0,0.3)'">
-                <img [src]="i.state ? 'assets/icon/on.svg' : 'assets/icon/off.svg'" />
+            <ion-row > <!-- (click)="updateDevice(i)" -->
+              <ion-col col-6 (click)="onDevice(i)">
+                <div class="onButtonControl" [class]="i.state == 1 ? 'onButtonControl onactive' : 'onButtonControl'">
+                  <a class="onButton">ON</a>
+                </div>
               </ion-col>
+              <ion-col col-6 (click)="offDevice(i)">
+                <div class="offButtonControl" [class]="i.state == 0 ? 'offButtonControl offactive' : 'offButtonControl'">
+                  <a class="offButton">OFF</a>
+                </div>
+              </ion-col>
+              <!-- <ion-col col-6 class="bulbCol" [style.border-color]="i.state ? 'rgba(75, 183, 49, 0.3)':'rgba(0,0,0,0.3)'">
+                <img [src]="!i.state ? 'assets/icon/on.svg' : 'assets/icon/off.svg'" />
+              </ion-col> -->
             </ion-row>
           </ion-grid>
 
