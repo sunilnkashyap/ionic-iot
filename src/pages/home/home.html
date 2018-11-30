@@ -7,8 +7,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-    
+<ion-content padding>    
   <ion-card *ngFor="let i of devices">
     <ion-card-content>
         <ion-grid>
@@ -24,7 +23,6 @@
                     <h1>
                         {{ i.device }}
                     </h1>
-                      
                   </ion-col>
                 </ion-row>
                 <ion-row>
@@ -41,7 +39,6 @@
                           {{ i.mobile }}
                         </a>
                       </h2>
-                        
                     </ion-col>
                   </ion-row>
               </ion-col>
@@ -65,11 +62,7 @@
               </ion-col> -->
             </ion-row>
           </ion-grid>
-
-            
             <!-- <ion-toggle (ionChange)="updateDevice(i)" checked="i.state" [(ngModel)]="i.state"></ion-toggle> -->
-
-        
     </ion-card-content>
 
     <!-- <ion-row no-padding style="margin-bottom: -4px">

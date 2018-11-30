@@ -35,7 +35,6 @@ export class HomePage {
       this.storage.forEach( r => {
         this.devices.push(r);
       })
-      
   }
   
   openActionSheet(currentRef) {
@@ -85,8 +84,9 @@ export class HomePage {
         {
           text: 'Save',
           handler: data => {
-            this.storage.set(data.device, {device: data.device, state: 0, mobile: data.mobile});
-            this.devices.push({device: data.device, state: 0, mobile: data.mobile});
+            let uid = '_' + Math.random().toString(36).substr(2, 9);
+            this.storage.set(uid, {device: data.device, state: 0, mobile: data.mobile, uid: uid});
+            this.devices.push({device: data.device, state: 0, mobile: data.mobile, uid: uid});
           }
         }
       ]
@@ -104,17 +104,16 @@ export class HomePage {
 
   onDevice(ref) {
     let state = 1;
-    this.storage.remove(ref.device);
     ref.state = state;
-    this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
+    this.storage.set(ref.uid, {device: ref.device, state: state, mobile: ref.mobile, uid: ref.uid});
     this.sendMessage(ref);
   }
 
   offDevice(ref) {
     let state = 0;
-    this.storage.remove(ref.device);
+    // this.storage.remove(ref.device);
     ref.state = state;
-    this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
+    this.storage.set(ref.uid, {device: ref.device, state: state, mobile: ref.mobile, uid: ref.uid});
     this.sendMessage(ref);
   }
 
@@ -147,8 +146,8 @@ export class HomePage {
           text: 'Save',
           handler: data => {
             let state = ref.state;
-            this.storage.remove(ref.device);
-            this.storage.set(data.device, {device: data.device, state: state, mobile: data.mobile});
+            // this.storage.remove(ref.device);
+            this.storage.set(ref.uid, {device: data.device, state: state, mobile: data.mobile, uid: ref.uid});
             this.refreshList();
             // this.msgAlert.present();
           }
@@ -173,7 +172,7 @@ export class HomePage {
         {
           text: 'Delete',
           handler: () => {
-            this.storage.remove(ref.device);
+            this.storage.remove(ref.uid);
             this.refreshList();
           }
         }
@@ -188,14 +187,10 @@ export class HomePage {
     this.devices = [];
     let TIME_IN_MS = 100;
     setTimeout( () => {
-        // somecode
         this.storage.forEach( r => {
           this.devices.push(r);
-          console.log(this.devices);
         })
-        
     }, TIME_IN_MS);
-    
   }
 
 
