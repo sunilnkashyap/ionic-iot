@@ -96,25 +96,44 @@ export class HomePage {
 
   updateDevice(ref) {
     let state = ref.state != 0 ? 0 : 1;
-    this.storage.remove(ref.device);
     ref.state = state;
-    this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
+    this.storage.set(ref.uid, {device: ref.device, state: state, mobile: ref.mobile, uid: ref.uid});
     this.sendMessage(ref);
   }
 
   onDevice(ref) {
-    let state = 1;
-    ref.state = state;
-    this.storage.set(ref.uid, {device: ref.device, state: state, mobile: ref.mobile, uid: ref.uid});
-    this.sendMessage(ref);
+    console.log(ref.state)
+    if(ref.state == 1){
+      const toast = this.toastCtrl.create({
+        message: 'Device is already ON.',
+        duration: 3000
+      });
+      toast.present();
+    } else {
+      let state = 1;
+      ref.state = state;
+      this.storage.set(ref.uid, {device: ref.device, state: state, mobile: ref.mobile, uid: ref.uid});
+      this.storage.forEach((r) => {
+        console.log(r)
+      })
+      this.sendMessage(ref);
+    }
   }
 
   offDevice(ref) {
-    let state = 0;
-    // this.storage.remove(ref.device);
-    ref.state = state;
-    this.storage.set(ref.uid, {device: ref.device, state: state, mobile: ref.mobile, uid: ref.uid});
-    this.sendMessage(ref);
+    if(ref.state == 0){
+      const toast = this.toastCtrl.create({
+        message: 'Device is already OFF.',
+        duration: 3000
+      });
+      toast.present();
+    } else {
+      let state = 0;
+      // this.storage.remove(ref.device);
+      ref.state = state;
+      this.storage.set(ref.uid, {device: ref.device, state: state, mobile: ref.mobile, uid: ref.uid});
+      this.sendMessage(ref);
+    }
   }
 
   
@@ -185,7 +204,7 @@ export class HomePage {
 
   refreshList() {
     this.devices = [];
-    let TIME_IN_MS = 100;
+    let TIME_IN_MS = 50;
     setTimeout( () => {
         this.storage.forEach( r => {
           this.devices.push(r);
@@ -195,7 +214,6 @@ export class HomePage {
 
 
   sendMessage(ref) {
-    console.log('sendmessage: ', ref)
     if (this.sms.hasPermission()) {
       let msg = ref.state == 1 ? 'ON' : 'OFF';
       this.sms.send(ref.mobile, msg).then( r => {
@@ -211,13 +229,11 @@ export class HomePage {
           duration: 3000
         });
         toast.present();
-        this.storage.remove(ref.device);
+        // this.storage.remove(ref.device);
         let state = ref.state == 0 ? 1 : 0;
-        this.storage.set(ref.device, {device: ref.device, state: state, mobile: ref.mobile});
+        this.storage.set(ref.uid, {device: ref.device, state: state, mobile: ref.mobile, uid: ref.uid});
         this.refreshList();
       })
-      
-      
     } else {
       let msgAlert = this.alertCtrl.create({
         title: 'We dont have permission to send messages.',
